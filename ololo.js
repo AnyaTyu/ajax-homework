@@ -1,7 +1,7 @@
 var data = {};
 document.getElementById('button').addEventListener('click', findUser);
 
-//Bщем юзера
+
 function findUser(){
 	var user = document.getElementById('user').value;
 	var xhttp = new XMLHttpRequest();
@@ -26,7 +26,7 @@ function findUser(){
 	}
 	xhttp.send(null);
 }
-//Ищем его репозитории
+
 function findUserRepositories(user){
 	var xhttp = new XMLHttpRequest();
 	xhttp.open('GET', 'https://api.github.com/users/' + user + "/repos", true);
@@ -41,7 +41,7 @@ function findUserRepositories(user){
 	}
 	xhttp.send(null);	
 }
-//Парсим данные
+
 function parseInfo(){
 	 if (data.name) document.getElementsByClassName('name')[0].innerHTML = "Name: " + data.name;
 	 if (data.email) document.getElementsByClassName('email')[0].innerHTML = "Email: " + data.email;
