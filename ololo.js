@@ -43,12 +43,26 @@ function findUserRepositories(user){
 }
 
 function parseInfo(){
-	 if (data.name) document.getElementsByClassName('name')[0].innerHTML = "Name: " + data.name;
-	 if (data.email) document.getElementsByClassName('email')[0].innerHTML = "Email: " + data.email;
-	 document.getElementsByClassName('foll')[0].innerHTML = "Followers: " + data.followers;
-    if (data.repos) {
+	if (data.name) {
+		document.getElementsByClassName('name')[0].innerHTML = "Name: " + data.name;
+	}
+	else{
+		document.getElementsByClassName('name')[0].innerHTML = "";
+	}
+	if (data.email) {
+		document.getElementsByClassName('email')[0].innerHTML = "Email: " + data.email;
+	}
+	else{
+		document.getElementsByClassName('email')[0].innerHTML = "";
+	}
+	document.getElementsByClassName('foll')[0].innerHTML = "Followers: " + data.followers;
+	parseRepository();
+}
+function parseRepository(){
+	    if (data.repos) {
     var repos = document.getElementsByClassName('repos')[0];
-    			repos.style.display = "block"
+    			repos.style.display = "block";
+    			repos.innerHTML = "";
                 data.repos.forEach(createLinks);
  
      function createLinks(element) {
