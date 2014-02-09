@@ -3,7 +3,6 @@ document.getElementById('button').addEventListener('click', checkLocalStorage);
 function checkLocalStorage(){
 	var user = document.getElementById('user').value;
 	user = user.toLowerCase();
-	console.log(user);
 	if (localStorage.getItem(user)!= undefined) {
 		var test = JSON.parse(localStorage.getItem(user));
 		if (test.expiration < +new Date()) {
@@ -38,7 +37,6 @@ function findUser(user){
 			document.getElementsByClassName('content')[0].style.display = "block";
 			data = JSON.parse(this.response);
 			data.expiration = +new Date() + 86400000;
-			console.log(data);
 			findUserRepositories(user);
 		}
 	}
@@ -54,7 +52,6 @@ function findUserRepositories(user){
 			return;
 		}
 		data.repos = JSON.parse(this.response);
-		console.log(data);
 		localStorage.setItem(user,JSON.stringify(data));
 		parseInfo(data);
 	}
