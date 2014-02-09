@@ -1,9 +1,25 @@
 var data = {};
-document.getElementById('button').addEventListener('click', findUser);
-
-
-function findUser(){
+document.getElementById('button').addEventListener('click', checkLocalStorage);
+function checkLocalStorage(){
 	var user = document.getElementById('user').value;
+	user = user.toLowerCase();
+	console.log(user);
+	if (localStorage.getItem(user)!= undefined) {
+		var test = JSON.parse(localStorage.getItem(user));
+		if (test.expiration < +new Date()) {
+			localStorage.removeItem(user);
+			findUser(user);
+		}
+		else{
+			parseInfo(test);
+		}
+	}
+	else{
+		findUser(user);
+	}
+}
+
+function findUser(user){
 	var xhttp = new XMLHttpRequest();
 	xhttp.open('GET', 'https://api.github.com/users/'+ user, true);
 	xhttp.onreadystatechange = function(){
@@ -21,6 +37,8 @@ function findUser(){
 		if (xhttp.status == 200) {
 			document.getElementsByClassName('content')[0].style.display = "block";
 			data = JSON.parse(this.response);
+			data.expiration = +new Date() + 86400000;
+			console.log(data);
 			findUserRepositories(user);
 		}
 	}
@@ -35,35 +53,36 @@ function findUserRepositories(user){
 		if (xhttp.readyState !=4){
 			return;
 		}
-
 		data.repos = JSON.parse(this.response);
+		console.log(data);
+		localStorage.setItem(user,JSON.stringify(data));
 		parseInfo(data);
 	}
 	xhttp.send(null);	
 }
 
-function parseInfo(){
-	if (data.name) {
-		document.getElementsByClassName('name')[0].innerHTML = "Name: " + data.name;
+function parseInfo(userData){
+	if (userData.name) {
+		document.getElementsByClassName('name')[0].innerHTML = "Name: " + userData.name;
 	}
 	else{
 		document.getElementsByClassName('name')[0].innerHTML = "";
 	}
-	if (data.email) {
-		document.getElementsByClassName('email')[0].innerHTML = "Email: " + data.email;
+	if (userData.email) {
+		document.getElementsByClassName('email')[0].innerHTML = "Email: " + userData.email;
 	}
 	else{
 		document.getElementsByClassName('email')[0].innerHTML = "";
 	}
-	document.getElementsByClassName('foll')[0].innerHTML = "Followers: " + data.followers;
-	parseRepository();
+	document.getElementsByClassName('foll')[0].innerHTML = "Followers: " + userData.followers;
+	parseRepository(userData);
 }
-function parseRepository(){
-	    if (data.repos) {
+function parseRepository(userData){
+	    if (userData.repos) {
     var repos = document.getElementsByClassName('repos')[0];
     			repos.style.display = "block";
     			repos.innerHTML = "";
-                data.repos.forEach(createLinks);
+                userData.repos.forEach(createLinks);
  
      function createLinks(element) {
          var newLink = document.createElement('a');
