@@ -34,7 +34,6 @@ function findUser(user){
 		}
 
 		if (xhttp.status == 200) {
-			document.getElementsByClassName('content')[0].style.display = "block";
 			data = JSON.parse(this.response);
 			data.expiration = +new Date() + 86400000;
 			findUserRepositories(user);
@@ -59,6 +58,7 @@ function findUserRepositories(user){
 }
 
 function parseInfo(userData){
+	document.getElementsByClassName('content')[0].style.display = "block";
 	if (userData.name) {
 		document.getElementsByClassName('name')[0].innerHTML = "Name: " + userData.name;
 	}
