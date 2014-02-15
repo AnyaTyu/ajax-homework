@@ -19,13 +19,11 @@ var obj = {
 		}
 	},
 	find_user: function(user){
-		var xhttp = new XMLHttpRequest();
+		var xhttp = new XMLHttpRequest(),
 		self = this;
 		xhttp.open('GET', 'https://api.github.com/users/'+ user);
 		xhttp.onreadystatechange = function(){
-			if (xhttp.readyState !=4){
-				return;
-			}
+			if (xhttp.readyState !=4) return;
 
 			if  (xhttp.status == 404) {
 				document.getElementsByClassName('content')[0].style.display = "none";
@@ -35,8 +33,7 @@ var obj = {
 			}
 
 			if (xhttp.status == 200) {
-				var data = {};
-				data = JSON.parse(this.response);
+				var data = JSON.parse(this.response);
 				data.expiration = +new Date() + 86400000;
 				self.find_userRepositories(user,data);
 			}
@@ -44,7 +41,7 @@ var obj = {
 		xhttp.send();
 	},
 	find_userRepositories: function(user,data){
-		var xhttp = new XMLHttpRequest();
+		var xhttp = new XMLHttpRequest(),
 		self = this;
 		xhttp.open('GET', 'https://api.github.com/users/' + user + "/repos");
 	
@@ -60,37 +57,51 @@ var obj = {
 
 	},
 	parse_info: function(userData){
-		document.getElementsByClassName('content')[0].style.display = "block";
+		getElem('content').style.display = "block";
 		if (userData.name) {
-			document.getElementsByClassName('name')[0].innerHTML = "Name: " + userData.name;
+            updateText('name', "Name: " + userData.name);
 		}
-		else{
-			document.getElementsByClassName('name')[0].innerHTML = "";
+		else {
+			updateText('name', '');
 		}
+        
 		if (userData.email) {
-			document.getElementsByClassName('email')[0].innerHTML = "Email: " + userData.email;
+			updateText('email', "Email: " + userData.email);
 		}
 		else{
-			document.getElementsByClassName('email')[0].innerHTML = "";
+			updateText('email', "");
 		}
-		document.getElementsByClassName('foll')[0].innerHTML = "Followers: " + userData.followers;
+        
+		updateText('foll', "Followers: " + userData.followers);
+        
+        function getElem(clsName) {
+            return document.getElementsByClassName(clsName)[0]
+        }
+        
+        function updateText(clsName, text) {
+            getElem(clsName).innerHTML = text;
+        }
+        
 		this.parse_repo(userData);
 	},	
 	parse_repo: function(userData){
 		if (userData.repos) {
-    	var repos = document.getElementsByClassName('repos')[0];
-    	repos.style.display = "block";
-    	repos.innerHTML = "";
-        userData.repos.forEach(createLinks);
- 
-     		function createLinks(element) {
-         	var newLink = document.createElement('a');
-         	newLink.href = element['html_url'];
-         	newLink.textContent = element['name'];
-         	repos.appendChild(newLink);
-         	newLink.appendChild(document.createElement("br"))
-     		}
+    	    var repos = document.getElementsByClassName('repos')[0];
+    	
+            repos.style.display = "block";
+    	    repos.innerHTML = "";
+            userData.repos.forEach(createLinks);
+
    		}
+        
+        function createLinks(element) {
+            var newLink = document.createElement('a');
+            
+            newLink.href = element['html_url'];
+            newLink.textContent = element['name'];
+            repos.appendChild(newLink);
+            newLink.appendChild(document.createElement("br"))
+        }
 	}
 }
 document.getElementById('button').addEventListener('click', obj.clear.bind(obj));
